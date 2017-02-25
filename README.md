@@ -1,6 +1,9 @@
 # lite-dev-server
 development server for node js
 
+[![Latest Stable Version](https://img.shields.io/npm/v/lite-dev-server.svg)](https://www.npmjs.com/package/lite-dev-server)
+[![License](https://img.shields.io/npm/l/lite-dev-server.svg)](https://www.npmjs.com/package/lite-dev-server)
+
 ## **Installation**
 
 ```bash
