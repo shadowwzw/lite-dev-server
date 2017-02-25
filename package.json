@@ -1,0 +1,18 @@
+{
+  "name": "lite-dev-server",
+  "version": "0.0.1",
+  "description": "lite-dev-server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Gavrilov Ruslan shadowwzw <miditab@yandex.ru>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/shadowwzw/lite-dev-server/issues"
+  },
+  "homepage": "https://github.com/shadowwzw/lite-dev-server",
+  "dependencies": {
+    "ws": "^2.1.0"
+  }
+}
