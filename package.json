@@ -1,6 +1,6 @@
 {
   "name": "lite-dev-server",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "lite-dev-server",
   "main": "index.js",
   "scripts": {
