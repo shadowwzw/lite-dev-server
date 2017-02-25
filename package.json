@@ -1,10 +1,14 @@
 {
   "name": "lite-dev-server",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "lite-dev-server",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shadowwzw/lite-dev-server.git"
   },
   "author": "Gavrilov Ruslan shadowwzw <miditab@yandex.ru>",
   "license": "MIT",
