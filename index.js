@@ -51,7 +51,7 @@ var liteDevServer = function liteDevServer(_ref) {
         });
         watchFolders = watchFolders.filter(function (folder) {
             try {
-                fs.accessSync(__dirname + "/" + folder);
+                fs.accessSync("" + folder);
                 return true;
             } catch (err) {
                 console.log(err + "");
@@ -60,13 +60,13 @@ var liteDevServer = function liteDevServer(_ref) {
         });
         console.log("\nwatchFolders", watchFolders);
         watchFolders.forEach(function (folder) {
-            fs.watch(__dirname + "/" + folder, { recursive: true }, function () {
+            fs.watch("" + folder, { recursive: true }, function () {
                 liveReloadEM.emit("reload");
             });
         });
     }
     if (page404) try {
-        fs.accessSync(__dirname + "/" + folder + "/" + page404, fs.constants.R_OK);
+        fs.accessSync(folder + "/" + page404, fs.constants.R_OK);
     } catch (err) {
         console.log(err + "");
     }
@@ -94,24 +94,24 @@ var liteDevServer = function liteDevServer(_ref) {
             var injectStream = new Transform();
             injectStream._transform = _transform;
             if (req.url === "/") {
-                fs.access(__dirname + "/" + folder + "/" + INDEX_HTML, fs.constants.R_OK, function (err) {
-                    if (err) fs.access(__dirname + "/" + folder + "/" + INDEX_HTM, fs.constants.R_OK, function (err) {
+                fs.access(folder + "/" + INDEX_HTML, fs.constants.R_OK, function (err) {
+                    if (err) fs.access(folder + "/" + INDEX_HTM, fs.constants.R_OK, function (err) {
                         if (err) {
                             console.log(err + "");
                             res.statusCode = CODE404;
-                            if (page404) fs.createReadStream(__dirname + "/" + folder + "/" + page404).pipe(injectStream).pipe(res);else res.end(MSG404);
-                        } else fs.createReadStream(__dirname + "/" + folder + "/" + INDEX_HTM).pipe(injectStream).pipe(res);
-                    });else fs.createReadStream(__dirname + "/" + folder + "/" + INDEX_HTML).pipe(injectStream).pipe(res);
+                            if (page404) fs.createReadStream(folder + "/" + page404).pipe(injectStream).pipe(res);else res.end(MSG404);
+                        } else fs.createReadStream(folder + "/" + INDEX_HTM).pipe(injectStream).pipe(res);
+                    });else fs.createReadStream(folder + "/" + INDEX_HTML).pipe(injectStream).pipe(res);
                 });
             } else {
-                fs.access(__dirname + "/" + folder + req.url, fs.constants.R_OK, function (err) {
+                fs.access("" + folder + req.url, fs.constants.R_OK, function (err) {
                     if (err) {
                         console.log(err + "");
                         res.statusCode = CODE404;
-                        if (page404) fs.createReadStream(__dirname + "/" + folder + "/" + page404).pipe(injectStream).pipe(res);else res.end(MSG404);
+                        if (page404) fs.createReadStream(folder + "/" + page404).pipe(injectStream).pipe(res);else res.end(MSG404);
                     } else {
                         var ext = path.extname(req.url);
-                        if (ext === ".html" || ext === ".htm") fs.createReadStream(__dirname + "/" + folder + req.url).pipe(injectStream).pipe(res);else fs.createReadStream(__dirname + "/" + folder + req.url).pipe(res);
+                        if (ext === ".html" || ext === ".htm") fs.createReadStream("" + folder + req.url).pipe(injectStream).pipe(res);else fs.createReadStream("" + folder + req.url).pipe(res);
                     }
                 });
             }

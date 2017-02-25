@@ -14,7 +14,7 @@ $ npm install lite-dev-server
 
 ```js
 const liteDevServer = require("lite-dev-server");
-liteDevServer( { folder: "public", watchFolders: ["public"]} );
+liteDevServer( { folder: __dirname+"public", watchFolders: ["public"]} );
 ```
 ----------
 

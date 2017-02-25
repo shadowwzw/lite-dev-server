@@ -33,7 +33,7 @@ const liteDevServer = ({ folder = "public", page404, listen = 3000, liveReload =
         });
         watchFolders = watchFolders.filter(folder => {
             try{
-                fs.accessSync(`${__dirname}/${folder}`);
+                fs.accessSync(`${folder}`);
                 return true;
             } catch(err){
                 console.log(err+"");
@@ -42,14 +42,14 @@ const liteDevServer = ({ folder = "public", page404, listen = 3000, liveReload =
         });
         console.log("\nwatchFolders", watchFolders);
         watchFolders.forEach(folder => {
-            fs.watch(`${__dirname}/${folder}`, {recursive: true}, ()=>{
+            fs.watch(`${folder}`, {recursive: true}, ()=>{
                 liveReloadEM.emit("reload");
             });
         });
     }
     if(page404)
         try{
-            fs.accessSync(`${__dirname}/${folder}/${page404}`, fs.constants.R_OK);
+            fs.accessSync(`${folder}/${page404}`, fs.constants.R_OK);
         } catch (err){
             console.log(err+"");
         }
@@ -77,32 +77,32 @@ const liteDevServer = ({ folder = "public", page404, listen = 3000, liveReload =
             const injectStream = new Transform();
             injectStream._transform = _transform;
             if(req.url === "/") {
-                fs.access(`${__dirname}/${folder}/${INDEX_HTML}`, fs.constants.R_OK, err => {
-                    if(err) fs.access(`${__dirname}/${folder}/${INDEX_HTM}`, fs.constants.R_OK, err =>{
+                fs.access(`${folder}/${INDEX_HTML}`, fs.constants.R_OK, err => {
+                    if(err) fs.access(`${folder}/${INDEX_HTM}`, fs.constants.R_OK, err =>{
                         if(err){
                             console.log(err+"");
                             res.statusCode = CODE404;
-                            if (page404) fs.createReadStream(`${__dirname}/${folder}/${page404}`).pipe(injectStream).pipe(res);
+                            if (page404) fs.createReadStream(`${folder}/${page404}`).pipe(injectStream).pipe(res);
                             else res.end(MSG404);
                         }
-                        else fs.createReadStream(`${__dirname}/${folder}/${INDEX_HTM}`).pipe(injectStream).pipe(res);
+                        else fs.createReadStream(`${folder}/${INDEX_HTM}`).pipe(injectStream).pipe(res);
                     });
-                    else fs.createReadStream(`${__dirname}/${folder}/${INDEX_HTML}`).pipe(injectStream).pipe(res);
+                    else fs.createReadStream(`${folder}/${INDEX_HTML}`).pipe(injectStream).pipe(res);
                 });
             } else {
-                fs.access(`${__dirname}/${folder}${req.url}`, fs.constants.R_OK, err => {
+                fs.access(`${folder}${req.url}`, fs.constants.R_OK, err => {
                     if(err) {
                         console.log(err+"");
                         res.statusCode = CODE404;
-                        if (page404) fs.createReadStream(`${__dirname}/${folder}/${page404}`).pipe(injectStream).pipe(res);
+                        if (page404) fs.createReadStream(`${folder}/${page404}`).pipe(injectStream).pipe(res);
                         else res.end(MSG404);
                     }
                     else {
                         const ext = path.extname(req.url);
                         if (ext === ".html" || ext === ".htm")
-                            fs.createReadStream(`${__dirname}/${folder}${req.url}`).pipe(injectStream).pipe(res);
+                            fs.createReadStream(`${folder}${req.url}`).pipe(injectStream).pipe(res);
                         else
-                            fs.createReadStream(`${__dirname}/${folder}${req.url}`).pipe(res);
+                            fs.createReadStream(`${folder}${req.url}`).pipe(res);
                     }
                 });
             }
