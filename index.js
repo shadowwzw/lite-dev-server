@@ -8,12 +8,12 @@ var MSG404 = "404 page not found!";
 var CODE404 = 404;
 var INDEX_HTML = "index.html";
 var INDEX_HTM = "index.htm";
-var clientScript = "!function(){if(WebSocket){var e=location.hostname||\"localhost\",o=new WebSocket(\"ws://\"+e+\":8080\");o.onopen=function(){console.log(\"lite-dev-server - The WebSocket connection is established successfully\"),o.onmessage=function(e){\"reload page\"===e.data&&setTimeout(function(){console.log(\"lite-dev-server - Change detected! Page will reload!\"),location.reload(!0)},100)}},o.onclose=function(){console.log(\"lite-dev-server - Connection lost! Need reload!\"),setInterval(function(){location.reload(!0)},1e3)}}else console.log(\"lite-dev-server - this browser don't support WebSocket!\")}();";
 
 var liteDevServer = function liteDevServer(_ref) {
     var _ref$folder = _ref.folder,
         folder = _ref$folder === undefined ? "public" : _ref$folder,
-        page404 = _ref.page404,
+        _ref$page = _ref.page404,
+        page404 = _ref$page === undefined ? null : _ref$page,
         _ref$listen = _ref.listen,
         listen = _ref$listen === undefined ? 3000 : _ref$listen,
         _ref$liveReload = _ref.liveReload,
@@ -27,6 +27,7 @@ var liteDevServer = function liteDevServer(_ref) {
         _ref$proxy = _ref.proxy,
         proxy = _ref$proxy === undefined ? [] : _ref$proxy;
 
+    var clientScript = "!function(){if(WebSocket){var e=location.hostname||\"localhost\",o=new WebSocket(\"ws://\"+e+\":" + webSocketPort + "\");o.onopen=function(){console.log(\"lite-dev-server - The WebSocket connection is established successfully\"),o.onmessage=function(e){\"reload page\"===e.data&&setTimeout(function(){console.log(\"lite-dev-server - Change detected! Page will reload!\"),location.reload(!0)},100)}},o.onclose=function(){console.log(\"lite-dev-server - Connection lost! Need reload!\"),setInterval(function(){location.reload(!0)},1e3)}}else console.log(\"lite-dev-server - this browser don't support WebSocket!\")}();";
     var _transform = function _transform(chunk, enc, cb) {
         if (autoInjectClientJS) {
             var newChunk = (chunk + "").replace(/(<head>)/, "$1 \n<script>" + clientScript + "</script>");

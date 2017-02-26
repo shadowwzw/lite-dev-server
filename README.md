@@ -49,6 +49,45 @@ app.listen(8888);
 ```
 ----------
 
+## **Api**
+
+### **create liteDevServer**
+```js
+const liteDevServer = require("lite-dev-server");
+liteDevServer({
+    folder: "public",
+    watchFolders: ["public", "src"],
+    listen: 3000,
+    webSocketPort: 8080,
+    page404: null,
+    liveReload: true,
+    autoInjectClientJS: true,
+    proxy: [
+        { path: "api", host: "localhost", port: "8888" },
+        { path: "api2", host: "localhost", port: "8888" }
+    ]
+});
+```
+####**Arguments**:
+
+* options (Object type):*
+
+  * folder (String) (default value: "public"): Folder for static files.
+
+  * watchFolders (Array of Strings) (default value: ["public"]): Folders for watching (for liveReload).
+
+  * proxy (Array of Objects) (default value: []): Proxy for API (Express, Koa, etc.).
+  
+  * listen (Integer) (default value: 3000): Port for development server (serve static files).
+  
+  * webSocketPort (Integer) (default value: 8080): For liveReload.
+  
+  * page404 (String | Null) (default value: null): Custom page.
+  
+  * liveReload (Boolean) (default value: true).
+  
+  * autoInjectClientJS (Boolean) (default value: true): Auto inject javascript in html documents (for liveReload).
+
 ## **License**
 
 MIT License
