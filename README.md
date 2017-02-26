@@ -4,6 +4,10 @@ This is http file server for develpment. This server supports livereload functio
 [![Latest Stable Version](https://img.shields.io/npm/v/lite-dev-server.svg)](https://www.npmjs.com/package/lite-dev-server)
 [![License](https://img.shields.io/npm/l/lite-dev-server.svg)](https://www.npmjs.com/package/lite-dev-server)
 
+----------
+
+## [Video tutorial](https://youtu.be/x2N2jSCACzM)
+
 ## **Installation**
 
 ```bash
