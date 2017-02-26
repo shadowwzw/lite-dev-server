@@ -1,5 +1,5 @@
 # lite-dev-server
-development server for node js
+This is http file server for develpment. This server supports livereload function and proxy function for your api server.
 
 [![Latest Stable Version](https://img.shields.io/npm/v/lite-dev-server.svg)](https://www.npmjs.com/package/lite-dev-server)
 [![License](https://img.shields.io/npm/l/lite-dev-server.svg)](https://www.npmjs.com/package/lite-dev-server)
@@ -15,6 +15,33 @@ $ npm install lite-dev-server
 ```js
 const liteDevServer = require("lite-dev-server");
 liteDevServer( { folder: "public", watchFolders: ["public"]} );
+```
+----------
+
+## **Usage with proxy function for Express api server**
+
+```js
+const liteDevServer = require("lite-dev-server");
+liteDevServer({
+    folder: "public",
+    watchFolders: ["public", "src"],
+    proxy: [
+        { path: "api", host: "localhost", port: "8888" },
+        { path: "api2", host: "localhost", port: "8888" }
+    ]
+});
+
+const express = require('express');
+const app = express();
+
+app.get('/api/1', function (req, res) {
+    res.send('Hello World!!')
+});
+
+app.get('/api2/person/1', function (req, res) {
+    res.send('person1')
+});
+app.listen(8888);
 ```
 ----------
 
