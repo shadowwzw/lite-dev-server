@@ -14,11 +14,19 @@ This is http file server for develpment. This server supports livereload functio
 $ npm install lite-dev-server
 ```
 ----------
-## **Usage**
+## **Usage (default port: 3000)**
 
 ```js
 const liteDevServer = require("lite-dev-server");
 liteDevServer( { folder: "public", watchFolders: ["public"]} );
+```
+----------
+
+## **Usage (on 80 port)**
+
+```js
+const liteDevServer = require("lite-dev-server");
+liteDevServer( { folder: "public", watchFolders: ["public"], listen: 80,} );
 ```
 ----------
 

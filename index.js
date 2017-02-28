@@ -119,6 +119,7 @@ var liteDevServer = function liteDevServer(_ref) {
         }
     });
     server.listen(listen);
+    console.log("lite-dev-server listening on port " + listen);
 };
 
 module.exports = liteDevServer;

@@ -109,6 +109,7 @@ const liteDevServer = ({ folder = "public", page404 = null, listen = 3000, liveR
         }
     });
     server.listen(listen);
+    console.log(`lite-dev-server listening on port ${listen}`);
 };
 
 module.exports = liteDevServer;
