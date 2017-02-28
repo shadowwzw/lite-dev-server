@@ -23,6 +23,8 @@ liteDevServer( { folder: "public", watchFolders: ["public"]} );
 ```
 ----------
 
+Attention: If the html document does not contain a head tag, then liveReload will not work.
+
 ## **Usage (on 3333 port)**
 
 ```js
