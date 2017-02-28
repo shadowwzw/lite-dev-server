@@ -45,8 +45,8 @@ liteDevServer({
     ]
 });
 // http://localhost:3000 response: index.html or index.htm from public folder.
-// http://localhost:3000/api/1 response: "Hello World!!"
-// http://localhost:3000/api2/person/1 response: "person1"
+// http://localhost:3000/api/1 response: "Hello World!!" from express
+// http://localhost:3000/api2/person/1 response: "person1" from express
 
 const express = require('express');
 const app = express();
