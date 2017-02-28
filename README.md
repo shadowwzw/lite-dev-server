@@ -19,6 +19,7 @@ $ npm install lite-dev-server
 ```js
 const liteDevServer = require("lite-dev-server");
 liteDevServer( { folder: "public", watchFolders: ["public"]} );
+// http://localhost:3000 response: index.html or index.htm from public folder.
 ```
 ----------
 
@@ -26,7 +27,8 @@ liteDevServer( { folder: "public", watchFolders: ["public"]} );
 
 ```js
 const liteDevServer = require("lite-dev-server");
-liteDevServer( { folder: "public", watchFolders: ["public"], listen: 80,} );
+liteDevServer( { folder: "public", watchFolders: ["public"], listen: 80,} ); 
+// http://localhost:80 response: index.html or index.htm from public folder.
 ```
 ----------
 
@@ -42,6 +44,9 @@ liteDevServer({
         { path: "api2", host: "localhost", port: "8888" }
     ]
 });
+// http://localhost:3000 response: index.html or index.htm from public folder.
+// http://localhost:3000/api/1 response: "Hello World!!"
+// http://localhost:3000/api2/person/1 response: "person1"
 
 const express = require('express');
 const app = express();
