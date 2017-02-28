@@ -23,12 +23,12 @@ liteDevServer( { folder: "public", watchFolders: ["public"]} );
 ```
 ----------
 
-## **Usage (on 80 port)**
+## **Usage (on 3333 port)**
 
 ```js
 const liteDevServer = require("lite-dev-server");
-liteDevServer( { folder: "public", watchFolders: ["public"], listen: 80,} ); 
-// http://localhost:80 response: index.html or index.htm from public folder.
+liteDevServer( { folder: "public", watchFolders: ["public"], listen: 3333,} ); 
+// http://localhost:3333 response: index.html or index.htm from public folder.
 ```
 ----------
 
