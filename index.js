@@ -25,7 +25,9 @@ var liteDevServer = function liteDevServer(_ref) {
         _ref$autoInjectClient = _ref.autoInjectClientJS,
         autoInjectClientJS = _ref$autoInjectClient === undefined ? true : _ref$autoInjectClient,
         _ref$proxy = _ref.proxy,
-        proxy = _ref$proxy === undefined ? [] : _ref$proxy;
+        proxy = _ref$proxy === undefined ? [] : _ref$proxy,
+        _ref$liveReloadDelay = _ref.liveReloadDelay,
+        liveReloadDelay = _ref$liveReloadDelay === undefined ? 0 : _ref$liveReloadDelay;
 
     var clientScript = "!function(){if(WebSocket){var e=location.hostname||\"localhost\",o=new WebSocket(\"ws://\"+e+\":" + webSocketPort + "\");o.onopen=function(){console.log(\"lite-dev-server - The WebSocket connection is established successfully\"),o.onmessage=function(e){\"reload page\"===e.data&&setTimeout(function(){console.log(\"lite-dev-server - Change detected! Page will reload!\"),location.reload(!0)},100)}},o.onclose=function(){console.log(\"lite-dev-server - Connection lost! Need reload!\"),setInterval(function(){location.reload(!0)},1e3)}}else console.log(\"lite-dev-server - this browser don't support WebSocket!\")}();";
     var _transform = function _transform(chunk, enc, cb) {
@@ -62,7 +64,9 @@ var liteDevServer = function liteDevServer(_ref) {
         console.log("\nwatchFolders", watchFolders);
         watchFolders.forEach(function (folder) {
             fs.watch("" + folder, { recursive: true }, function () {
-                liveReloadEM.emit("reload");
+                setTimeout(function () {
+                    liveReloadEM.emit("reload");
+                }, liveReloadDelay);
             });
         });
     }

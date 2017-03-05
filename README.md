@@ -101,6 +101,8 @@ liteDevServer({
   
   * liveReload (Boolean) (default value: true).
   
+  * liveReloadDelay (Integer) (default value: 0): Delay before the page is reloaded.
+  
   * autoInjectClientJS (Boolean) (default value: true): Auto inject javascript in html documents (for liveReload).
 
 ## **License**

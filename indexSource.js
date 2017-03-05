@@ -7,7 +7,7 @@ const CODE404 = 404;
 const INDEX_HTML = "index.html";
 const INDEX_HTM = "index.htm";
 
-const liteDevServer = ({ folder = "public", page404 = null, listen = 3000, liveReload = true, webSocketPort = 8080, watchFolders = ["public"], autoInjectClientJS = true, proxy = []}) => {
+const liteDevServer = ({ folder = "public", page404 = null, listen = 3000, liveReload = true, webSocketPort = 8080, watchFolders = ["public"], autoInjectClientJS = true, proxy = [], liveReloadDelay = 0}) => {
     const clientScript = `!function(){if(WebSocket){var e=location.hostname||"localhost",o=new WebSocket("ws://"+e+":${webSocketPort}");o.onopen=function(){console.log("lite-dev-server - The WebSocket connection is established successfully"),o.onmessage=function(e){"reload page"===e.data&&setTimeout(function(){console.log("lite-dev-server - Change detected! Page will reload!"),location.reload(!0)},100)}},o.onclose=function(){console.log("lite-dev-server - Connection lost! Need reload!"),setInterval(function(){location.reload(!0)},1e3)}}else console.log("lite-dev-server - this browser don't support WebSocket!")}();`;
     const _transform = function(chunk, enc, cb){
         if(autoInjectClientJS){
@@ -43,7 +43,9 @@ const liteDevServer = ({ folder = "public", page404 = null, listen = 3000, liveR
         console.log("\nwatchFolders", watchFolders);
         watchFolders.forEach(folder => {
             fs.watch(`${folder}`, {recursive: true}, ()=>{
-                liveReloadEM.emit("reload");
+                setTimeout(function(){
+                    liveReloadEM.emit("reload");
+                }, liveReloadDelay);
             });
         });
     }
