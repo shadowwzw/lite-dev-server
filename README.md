@@ -8,6 +8,8 @@ This is http file server for develpment. This server supports livereload functio
 
 ## [Video tutorial](https://youtu.be/x2N2jSCACzM)
 
+Perhaps you may be interested: [webpack-with-lite-dev-server-babel-koa-react](https://github.com/shadowwzw/webpack-with-lite-dev-server-babel-koa-react)
+
 ## **Installation**
 
 ```bash
