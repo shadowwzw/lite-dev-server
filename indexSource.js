@@ -9,7 +9,7 @@ const INDEX_HTM = "index.htm";
 
 if (!fs.constants){
   fs.constants = {
-    R_OK: "R_OK",
+    R_OK: 4,
   }
 }
 
