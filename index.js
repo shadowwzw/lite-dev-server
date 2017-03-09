@@ -9,6 +9,12 @@ var CODE404 = 404;
 var INDEX_HTML = "index.html";
 var INDEX_HTM = "index.htm";
 
+if (!fs.constants){
+  fs.constants = {
+    R_OK: "R_OK",
+  }
+}
+
 var liteDevServer = function liteDevServer(_ref) {
     var _ref$folder = _ref.folder,
         folder = _ref$folder === undefined ? "public" : _ref$folder,
