@@ -4,6 +4,7 @@ var path = require("path");
 var http = require("http");
 var fs = require("fs");
 var Transform = require("stream").Transform;
+var mime = require('mime-types');
 var MSG404 = "404 page not found!";
 var CODE404 = 404;
 var INDEX_HTML = "index.html";
@@ -106,15 +107,22 @@ var liteDevServer = function liteDevServer(_ref) {
         } else {
             var injectStream = new Transform();
             injectStream._transform = _transform;
-            if (req.url === "/" || historyApiFallback) {
+            var ext = path.extname(req.url);
+            if (req.url === "/" || historyApiFallback && !ext) {
                 fs.access(folder + "/" + INDEX_HTML, fs.constants.R_OK, function (err) {
                     if (err) fs.access(folder + "/" + INDEX_HTM, fs.constants.R_OK, function (err) {
                         if (err) {
                             console.log(err + "");
                             res.statusCode = CODE404;
                             if (page404) fs.createReadStream(folder + "/" + page404).pipe(injectStream).pipe(res);else res.end(MSG404);
-                        } else fs.createReadStream(folder + "/" + INDEX_HTM).pipe(injectStream).pipe(res);
-                    });else fs.createReadStream(folder + "/" + INDEX_HTML).pipe(injectStream).pipe(res);
+                        } else {
+                            res.setHeader('Content-Type', 'text/html');
+                            fs.createReadStream(folder + "/" + INDEX_HTM).pipe(injectStream).pipe(res);
+                        }
+                    });else {
+                        res.setHeader('Content-Type', 'text/html');
+                        fs.createReadStream(folder + "/" + INDEX_HTML).pipe(injectStream).pipe(res);
+                    }
                 });
             } else {
                 fs.access("" + folder + req.url, fs.constants.R_OK, function (err) {
@@ -123,8 +131,14 @@ var liteDevServer = function liteDevServer(_ref) {
                         res.statusCode = CODE404;
                         if (page404) fs.createReadStream(folder + "/" + page404).pipe(injectStream).pipe(res);else res.end(MSG404);
                     } else {
-                        var ext = path.extname(req.url);
-                        if (ext === ".html" || ext === ".htm") fs.createReadStream("" + folder + req.url).pipe(injectStream).pipe(res);else fs.createReadStream("" + folder + req.url).pipe(res);
+                        // const ext = path.extname(req.url);
+                        if (ext === ".html" || ext === ".htm") {
+                            res.setHeader('Content-Type', 'text/html');
+                            fs.createReadStream("" + folder + req.url).pipe(injectStream).pipe(res);
+                        } else {
+                            res.setHeader('Content-Type', mime.contentType(ext));
+                            fs.createReadStream("" + folder + req.url).pipe(res);
+                        }
                     }
                 });
             }

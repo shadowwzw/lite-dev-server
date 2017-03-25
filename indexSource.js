@@ -2,6 +2,7 @@ const path = require("path");
 const http = require("http");
 const fs = require("fs");
 const Transform = require("stream").Transform;
+const mime = require('mime-types');
 const MSG404 = "404 page not found!";
 const CODE404 = 404;
 const INDEX_HTML = "index.html";
@@ -84,7 +85,8 @@ const liteDevServer = ({ folder = "public", page404 = null, listen = 3000, liveR
         } else {
             const injectStream = new Transform();
             injectStream._transform = _transform;
-            if(req.url === "/" || historyApiFallback) {
+            const ext = path.extname(req.url);
+            if(req.url === "/" || (historyApiFallback && !ext)) {
                 fs.access(`${folder}/${INDEX_HTML}`, fs.constants.R_OK, err => {
                     if(err) fs.access(`${folder}/${INDEX_HTM}`, fs.constants.R_OK, err =>{
                         if(err){
@@ -93,9 +95,15 @@ const liteDevServer = ({ folder = "public", page404 = null, listen = 3000, liveR
                             if (page404) fs.createReadStream(`${folder}/${page404}`).pipe(injectStream).pipe(res);
                             else res.end(MSG404);
                         }
-                        else fs.createReadStream(`${folder}/${INDEX_HTM}`).pipe(injectStream).pipe(res);
+                        else {
+                            res.setHeader('Content-Type', 'text/html');
+                            fs.createReadStream(`${folder}/${INDEX_HTM}`).pipe(injectStream).pipe(res);
+                        }
                     });
-                    else fs.createReadStream(`${folder}/${INDEX_HTML}`).pipe(injectStream).pipe(res);
+                    else {
+                        res.setHeader('Content-Type', 'text/html');
+                        fs.createReadStream(`${folder}/${INDEX_HTML}`).pipe(injectStream).pipe(res);
+                    }
                 });
             } else {
                 fs.access(`${folder}${req.url}`, fs.constants.R_OK, err => {
@@ -106,11 +114,14 @@ const liteDevServer = ({ folder = "public", page404 = null, listen = 3000, liveR
                         else res.end(MSG404);
                     }
                     else {
-                        const ext = path.extname(req.url);
-                        if (ext === ".html" || ext === ".htm")
+                        // const ext = path.extname(req.url);
+                        if (ext === ".html" || ext === ".htm") {
+                            res.setHeader('Content-Type', 'text/html');
                             fs.createReadStream(`${folder}${req.url}`).pipe(injectStream).pipe(res);
-                        else
+                        } else {
+                            res.setHeader('Content-Type', mime.contentType(ext));
                             fs.createReadStream(`${folder}${req.url}`).pipe(res);
+                        }
                     }
                 });
             }

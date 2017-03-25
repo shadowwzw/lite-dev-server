@@ -1,6 +1,6 @@
 {
   "name": "lite-dev-server",
-  "version": "0.3.16",
+  "version": "0.3.17",
   "description": "This is http file server for develpment. This server supports livereload function and proxy function for your api server.",
   "main": "index.js",
   "scripts": {
@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/shadowwzw/lite-dev-server",
   "dependencies": {
+    "mime-types": "^2.1.15",
     "ws": "^2.1.0"
   },
   "keywords": [
