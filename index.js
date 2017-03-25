@@ -9,10 +9,10 @@ var CODE404 = 404;
 var INDEX_HTML = "index.html";
 var INDEX_HTM = "index.htm";
 
-if (!fs.constants){
-  fs.constants = {
-    R_OK: 4,
-  }
+if (!fs.constants) {
+    fs.constants = {
+        R_OK: 4
+    };
 }
 
 var liteDevServer = function liteDevServer(_ref) {
@@ -33,7 +33,9 @@ var liteDevServer = function liteDevServer(_ref) {
         _ref$proxy = _ref.proxy,
         proxy = _ref$proxy === undefined ? [] : _ref$proxy,
         _ref$liveReloadDelay = _ref.liveReloadDelay,
-        liveReloadDelay = _ref$liveReloadDelay === undefined ? 0 : _ref$liveReloadDelay;
+        liveReloadDelay = _ref$liveReloadDelay === undefined ? 0 : _ref$liveReloadDelay,
+        _ref$historyApiFallba = _ref.historyApiFallback,
+        historyApiFallback = _ref$historyApiFallba === undefined ? false : _ref$historyApiFallba;
 
     var clientScript = "!function(){if(WebSocket){var e=location.hostname||\"localhost\",o=new WebSocket(\"ws://\"+e+\":" + webSocketPort + "\");o.onopen=function(){console.log(\"lite-dev-server - The WebSocket connection is established successfully\"),o.onmessage=function(e){\"reload page\"===e.data&&setTimeout(function(){console.log(\"lite-dev-server - Change detected! Page will reload!\"),location.reload(!0)},100)}},o.onclose=function(){console.log(\"lite-dev-server - Connection lost! Need reload!\"),setInterval(function(){location.reload(!0)},1e3)}}else console.log(\"lite-dev-server - this browser don't support WebSocket!\")}();";
     var _transform = function _transform(chunk, enc, cb) {
@@ -104,7 +106,7 @@ var liteDevServer = function liteDevServer(_ref) {
         } else {
             var injectStream = new Transform();
             injectStream._transform = _transform;
-            if (req.url === "/") {
+            if (req.url === "/" || historyApiFallback) {
                 fs.access(folder + "/" + INDEX_HTML, fs.constants.R_OK, function (err) {
                     if (err) fs.access(folder + "/" + INDEX_HTM, fs.constants.R_OK, function (err) {
                         if (err) {
