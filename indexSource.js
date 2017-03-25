@@ -7,7 +7,6 @@ const MSG404 = "404 page not found!";
 const CODE404 = 404;
 const INDEX_HTML = "index.html";
 const INDEX_HTM = "index.htm";
-const clientScript = require('./clientScriptMinifed');
 
 if (!fs.constants){
   fs.constants = {
@@ -28,6 +27,7 @@ const liteDevServer = (
     liveReloadDelay = 0, 
     historyApiFallback = false 
 }) => {
+    const clientScript = fs.readFileSync('./clientScriptMinifed', 'utf8').reaplace('${webSocketPort}', webSocketPort);
     const _transform = function(chunk, enc, cb){
         if(autoInjectClientJS){
             const newChunk = (chunk+"").replace(/(<head>)/, `$1 \n<script>${clientScript}</script>`);
