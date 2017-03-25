@@ -79,6 +79,7 @@ liteDevServer({
     page404: null,
     liveReload: true,
     autoInjectClientJS: true,
+    historyApiFallback: false,
     proxy: [
         { path: "api", host: "localhost", port: "8888" },
         { path: "api2", host: "localhost", port: "8888" }
@@ -106,6 +107,8 @@ liteDevServer({
   * liveReloadDelay (Integer) (default value: 0): Delay before the page is reloaded.
   
   * autoInjectClientJS (Boolean) (default value: true): Auto inject javascript in html documents (for liveReload).
+  
+  * historyApiFallback (Boolean) (default value: false): If you are using the HTML5 history API you probably need to serve your index.html in place of 404 responses, which can be done by setting historyApiFallback: true.
 
 ## **License**
 
