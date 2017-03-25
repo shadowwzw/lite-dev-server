@@ -38,7 +38,7 @@ var liteDevServer = function liteDevServer(_ref) {
         _ref$historyApiFallba = _ref.historyApiFallback,
         historyApiFallback = _ref$historyApiFallba === undefined ? false : _ref$historyApiFallba;
 
-    var clientScript = fs.readFileSync('./clientScriptMinifed.js', 'utf8').reaplace('${webSocketPort}', webSocketPort);
+    var clientScript = fs.readFileSync(__dirname + "/clientScriptMinifed.js", 'utf8').reaplace('${webSocketPort}', webSocketPort);
     var _transform = function _transform(chunk, enc, cb) {
         if (autoInjectClientJS) {
             var newChunk = (chunk + "").replace(/(<head>)/, "$1 \n<script>" + clientScript + "</script>");
