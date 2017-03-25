@@ -9,7 +9,6 @@ var MSG404 = "404 page not found!";
 var CODE404 = 404;
 var INDEX_HTML = "index.html";
 var INDEX_HTM = "index.htm";
-var clientScript = require('./clientScriptMinifed');
 
 if (!fs.constants) {
     fs.constants = {
@@ -39,6 +38,7 @@ var liteDevServer = function liteDevServer(_ref) {
         _ref$historyApiFallba = _ref.historyApiFallback,
         historyApiFallback = _ref$historyApiFallba === undefined ? false : _ref$historyApiFallba;
 
+    var clientScript = fs.readFileSync('./clientScriptMinifed', 'utf8').reaplace('${webSocketPort}', webSocketPort);
     var _transform = function _transform(chunk, enc, cb) {
         if (autoInjectClientJS) {
             var newChunk = (chunk + "").replace(/(<head>)/, "$1 \n<script>" + clientScript + "</script>");
