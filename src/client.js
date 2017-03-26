@@ -6,8 +6,8 @@
             console.log("lite-dev-server - The WebSocket connection is established successfully");
             ws.onmessage = function (event) {
                 if (event.data === "reload page") {
+                    console.log(`lite-dev-server - Change detected!\nPage will reload after ${reloadDelay} ms!`);
                     setTimeout(function () {
-                        console.log("lite-dev-server - Change detected! Page will reload!");
                         location.reload(true);
                     }, reloadDelay);
                 }
