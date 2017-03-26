@@ -1,5 +1,7 @@
 "use strict";
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var path = require("path");
 var http = require("http");
 var fs = require("fs");
@@ -89,13 +91,12 @@ var liteDevServer = function liteDevServer(_ref) {
         var ext = path.extname(req.url);
         console.log("<-- " + req.url);
         var matchedProxy = proxy.find(function (item) {
-            var regExp = new RegExp("^/" + item.path + "(/.*)?$");
-            return req.url.match(regExp) && item.host && item.port;
+            return req.url.match(item.path) && item.host && item.port;
         });
         if (matchedProxy) {
             var url = req.url;
             var pathRewrite = matchedProxy.pathRewrite;
-            if (pathRewrite) {
+            if (pathRewrite && (typeof pathRewrite === "undefined" ? "undefined" : _typeof(pathRewrite)) === 'object') {
                 url = url.replace(pathRewrite.pattern, pathRewrite.replacement);
             }
             var options = {

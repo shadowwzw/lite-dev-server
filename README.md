@@ -81,8 +81,8 @@ liteDevServer({
     autoInjectClientJS: true,
     historyApiFallback: false,
     proxy: [
-        { path: "api", host: "localhost", port: "8888" },
-        { path: "api2", host: "localhost", port: "8888" }
+        { path: /\/api/, host: "localhost", port: "8888" },
+        { path: /\/api2/, host: "localhost", port: "8888" }
     ]
 });
 ```

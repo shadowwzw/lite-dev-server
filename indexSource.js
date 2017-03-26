@@ -79,13 +79,12 @@ const liteDevServer = (
         const ext = path.extname(req.url);
         console.log(`<-- ${req.url}`);
         const matchedProxy = proxy.find(item => {
-            const regExp = new RegExp(`^\/${item.path}(\/.*)?$`);
-            return req.url.match(regExp) && item.host && item.port;
+            return req.url.match(item.path) && item.host && item.port;
         });
         if(matchedProxy){
             let url = req.url;
             const pathRewrite = matchedProxy.pathRewrite;
-            if(pathRewrite){
+            if(pathRewrite && (typeof pathRewrite === 'object')){
                 url = url.replace(pathRewrite.pattern, pathRewrite.replacement);
             }
             const options = {
