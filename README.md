@@ -78,6 +78,7 @@ liteDevServer({
     webSocketPort: 8080,
     page404: null,
     liveReload: true,
+    reloadDelay: 200,
     autoInjectClientJS: true,
     historyApiFallback: false,
     proxy: [
@@ -103,6 +104,8 @@ liteDevServer({
   * page404 (String | Null) (default value: null): Custom page.
   
   * liveReload (Boolean) (default value: true).
+  
+  * reloadDelay (Integer) (default value: 100): reload delay for liveReload (in milliseconds).
   
   * liveReloadDelay (Integer) (default value: 0): Delay before the page is reloaded.
   
