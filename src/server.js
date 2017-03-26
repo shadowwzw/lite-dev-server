@@ -3,6 +3,7 @@ const http = require("http");
 const fs = require("fs");
 const Transform = require("stream").Transform;
 const mime = require('mime-types');
+const chalk = require('chalk');
 const MSG404 = "404 page not found!";
 const CODE404 = 404;
 const INDEX_HTML = "index.html";
@@ -25,9 +26,10 @@ const liteDevServer = (
     autoInjectClientJS = true, 
     proxy = [], 
     liveReloadDelay = 0, 
-    historyApiFallback = false
+    historyApiFallback = false,
+    reloadDelay = 100,
 }) => {
-    const clientScript = fs.readFileSync(`${__dirname}/client.js`, 'utf8').replace('webSocketPort', webSocketPort).replace('reloadDelay', webSocketPort);
+    const clientScript = fs.readFileSync(`${__dirname}/client.js`, 'utf8').replace('webSocketPort', webSocketPort).replace('reloadDelay', reloadDelay);
     const _transform = function(chunk, enc, cb){
         if(autoInjectClientJS){
             const newChunk = (chunk+"").replace(/(<head>)/, `$1 \n<script>${clientScript}</script>`);
@@ -55,11 +57,11 @@ const liteDevServer = (
                 fs.accessSync(`${folder}`);
                 return true;
             } catch(err){
-                console.log(err+"");
+                console.log(chalk.red(err+""));
                 return false;
             }
         });
-        console.log("\nwatchFolders", watchFolders);
+        console.log(chalk.green(`\nwatchFolders ${watchFolders}`));
         watchFolders.forEach(folder => {
             fs.watch(`${folder}`, {recursive: true}, ()=>{
                 setTimeout(function(){
@@ -72,12 +74,12 @@ const liteDevServer = (
         try{
             fs.accessSync(`${folder}/${page404}`, fs.constants.R_OK);
         } catch (err){
-            console.log(err+"");
+            console.log(chalk.red(err+""));
         }
 
     const server = http.createServer((req, res) => {
         const ext = path.extname(req.url);
-        console.log(`<-- ${req.url}`);
+        console.log(chalk.blue(`<-- ${req.url}`));
         const matchedProxy = proxy.find(item => {
             return req.url.match(item.path) && item.host && item.port;
         });
@@ -106,7 +108,7 @@ const liteDevServer = (
                 fs.access(`${folder}/${INDEX_HTML}`, fs.constants.R_OK, err => {
                     if(err) fs.access(`${folder}/${INDEX_HTM}`, fs.constants.R_OK, err =>{
                         if(err){
-                            console.log(err+"");
+                            console.log(chalk.red(err+""));
                             res.statusCode = CODE404;
                             if (page404) fs.createReadStream(`${folder}/${page404}`).pipe(injectStream).pipe(res);
                             else res.end(MSG404);
@@ -124,7 +126,7 @@ const liteDevServer = (
             } else {
                 fs.access(`${folder}${req.url}`, fs.constants.R_OK, err => {
                     if(err) {
-                        console.log(err+"");
+                        console.log(chalk.red(err+""));
                         res.statusCode = CODE404;
                         if (page404) fs.createReadStream(`${folder}/${page404}`).pipe(injectStream).pipe(res);
                         else res.end(MSG404);
@@ -144,7 +146,7 @@ const liteDevServer = (
         }
     });
     server.listen(listen);
-    console.log(`lite-dev-server listening on port ${listen}`);
+    console.log(chalk.green(`lite-dev-server listening on port ${listen}`));
 };
 
 module.exports = liteDevServer;
