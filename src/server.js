@@ -29,7 +29,7 @@ const liteDevServer = (
     historyApiFallback = false,
     reloadDelayOnClient = 100,
 }) => {
-    const clientScript = fs.readFileSync(`${__dirname}/client.js`, 'utf8').replace('webSocketPort', webSocketPort).replace('reloadDelay', reloadDelayOnClient);
+    const clientScript = fs.readFileSync(`${__dirname}/client.js`, 'utf8').replace(/webSocketPort/g, webSocketPort).replace(/reloadDelay/g, reloadDelayOnClient);
     const _transform = function(chunk, enc, cb){
         if(autoInjectClientJS){
             const newChunk = (chunk+"").replace(/(<head>)/, `$1 \n<script>${clientScript}</script>`);
