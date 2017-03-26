@@ -81,6 +81,7 @@ liteDevServer({
     reloadDelay: 200,
     autoInjectClientJS: true,
     historyApiFallback: false,
+    reloadDelayOnClient: 1000,
     proxy: [
         { path: /\/api/, host: "localhost", port: "8888" },
         { path: /\/api2/, host: "localhost", port: "8888" },
