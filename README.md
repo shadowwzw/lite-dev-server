@@ -83,7 +83,11 @@ liteDevServer({
     historyApiFallback: false,
     proxy: [
         { path: /\/api/, host: "localhost", port: "8888" },
-        { path: /\/api2/, host: "localhost", port: "8888" }
+        { path: /\/api2/, host: "localhost", port: "8888" },
+        { path: /\/gavrilov\/project/, host: "localhost", port: "3000", pathRewrite: {
+            pattern: /\/gavrilov\/project/,
+            replacement: "",
+        }}
     ]
 });
 ```
@@ -105,9 +109,9 @@ liteDevServer({
   
   * liveReload (Boolean) (default value: true).
   
-  * reloadDelay (Integer) (default value: 100): reload delay for liveReload (in milliseconds).
+  * reloadDelayOnClient (Integer) (default value: 100): reload delay for liveReload (on client) (in milliseconds).
   
-  * liveReloadDelay (Integer) (default value: 0): Delay before the page is reloaded.
+  * liveReloadDelay (Integer) (default value: 0): Delay before the page is reloaded (on server) (in milliseconds).
   
   * autoInjectClientJS (Boolean) (default value: true): Auto inject javascript in html documents (for liveReload).
   
