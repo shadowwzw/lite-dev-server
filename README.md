@@ -44,8 +44,8 @@ liteDevServer({
     folder: "public",
     watchFolders: ["public", "src"],
     proxy: [
-        { path: "api", host: "localhost", port: "8888" },
-        { path: "api2", host: "localhost", port: "8888" }
+        { path: /\/api/, host: "localhost", port: "8888" },
+        { path: /\/api2/, host: "localhost", port: "8888" }
     ]
 });
 // http://localhost:3000 response: index.html or index.htm from public folder.
