@@ -25,7 +25,7 @@ const liteDevServer = (
     autoInjectClientJS = true, 
     proxy = [], 
     liveReloadDelay = 0, 
-    historyApiFallback = false 
+    historyApiFallback = false
 }) => {
     const clientScript = fs.readFileSync(`${__dirname}/clientScriptMinifed.js`, 'utf8').replace('${webSocketPort}', webSocketPort);
     const _transform = function(chunk, enc, cb){
@@ -76,16 +76,22 @@ const liteDevServer = (
         }
 
     const server = http.createServer((req, res) => {
-
+        const ext = path.extname(req.url);
+        console.log(`<-- ${req.url}`);
         const matchedProxy = proxy.find(item => {
             const regExp = new RegExp(`^\/${item.path}(\/.*)?$`);
             return req.url.match(regExp) && item.host && item.port;
         });
         if(matchedProxy){
+            let url = req.url;
+            const pathRewrite = matchedProxy.pathRewrite;
+            if(pathRewrite){
+                url = url.replace(pathRewrite.pattern, pathRewrite.replacement);
+            }
             const options = {
                 hostname: matchedProxy.host,
                 port: matchedProxy.port,
-                path: req.url,
+                path: url,
                 method: req.method,
                 headers: req.headers,
             };
@@ -97,7 +103,6 @@ const liteDevServer = (
         } else {
             const injectStream = new Transform();
             injectStream._transform = _transform;
-            const ext = path.extname(req.url);
             if(req.url === "/" || (historyApiFallback && !ext)) {
                 fs.access(`${folder}/${INDEX_HTML}`, fs.constants.R_OK, err => {
                     if(err) fs.access(`${folder}/${INDEX_HTM}`, fs.constants.R_OK, err =>{

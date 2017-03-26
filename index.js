@@ -86,16 +86,22 @@ var liteDevServer = function liteDevServer(_ref) {
     }
 
     var server = http.createServer(function (req, res) {
-
+        var ext = path.extname(req.url);
+        console.log("<-- " + req.url);
         var matchedProxy = proxy.find(function (item) {
             var regExp = new RegExp("^/" + item.path + "(/.*)?$");
             return req.url.match(regExp) && item.host && item.port;
         });
         if (matchedProxy) {
+            var url = req.url;
+            var pathRewrite = matchedProxy.pathRewrite;
+            if (pathRewrite) {
+                url = url.replace(pathRewrite.pattern, pathRewrite.replacement);
+            }
             var options = {
                 hostname: matchedProxy.host,
                 port: matchedProxy.port,
-                path: req.url,
+                path: url,
                 method: req.method,
                 headers: req.headers
             };
@@ -107,7 +113,6 @@ var liteDevServer = function liteDevServer(_ref) {
         } else {
             var injectStream = new Transform();
             injectStream._transform = _transform;
-            var ext = path.extname(req.url);
             if (req.url === "/" || historyApiFallback && !ext) {
                 fs.access(folder + "/" + INDEX_HTML, fs.constants.R_OK, function (err) {
                     if (err) fs.access(folder + "/" + INDEX_HTM, fs.constants.R_OK, function (err) {
