@@ -27,7 +27,7 @@ const liteDevServer = (
     liveReloadDelay = 0, 
     historyApiFallback = false
 }) => {
-    const clientScript = fs.readFileSync(`${__dirname}/clientScriptMinifed.js`, 'utf8').replace('${webSocketPort}', webSocketPort);
+    const clientScript = fs.readFileSync(`${__dirname}/clientScriptMinifed.js`, 'utf8').replace('webSocketPort', webSocketPort).replace('reloadDelay', webSocketPort);
     const _transform = function(chunk, enc, cb){
         if(autoInjectClientJS){
             const newChunk = (chunk+"").replace(/(<head>)/, `$1 \n<script>${clientScript}</script>`);
