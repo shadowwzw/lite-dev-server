@@ -3,7 +3,7 @@ const fs = require('fs');
 const client = fs.readFileSync(`${__dirname}/../lib/client.js`, 'UTF-8');
 const ava = require('ava');
 const liteDevServer = require("../lib/server");
-const webSocketPort = 8080;
+const webSocketPort = 0;
 const reloadDelayOnClient = 1000;
 
 const server1 = liteDevServer({

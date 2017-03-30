@@ -37,11 +37,12 @@ const liteDevServer = ({
     } else this.push(chunk);
     cb();
   };
+  let wss = null;
   if (liveReload) {
     const EventEmitter = require("events");
     const liveReloadEM = new EventEmitter();
     const ws = require("ws");
-    const wss = new ws.Server({ port: webSocketPort });
+    wss = new ws.Server({ port: webSocketPort });
     wss.on("connection", connection => {
       console.log("\nlite-dev-server: The WebSocket connection is established successfully");
       const reloadHandler = () => {
@@ -147,6 +148,7 @@ const liteDevServer = ({
   });
   server.listen(listen);
   console.log(chalk.green(`lite-dev-server listening on port ${server.address().port}`));
+  server.wss =wss;
   return server;
 };
 
