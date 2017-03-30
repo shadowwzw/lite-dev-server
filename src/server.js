@@ -125,6 +125,8 @@ const liteDevServer = ({
       } else {
         try {
           await fsp.access(`${folder}${req.url}`, fs.constants.R_OK);
+          const stats = await fsp.stat(`${folder}${req.url}`);
+          if(!stats.isFile()) throw new Error('this is folder');
           if (ext === ".html" || ext === ".htm") {
             res.setHeader('Content-Type', 'text/html');
             fs.createReadStream(`${folder}${req.url}`).pipe(injectStream).pipe(res);

@@ -90,3 +90,8 @@ ava(async t => {
     const clientWithValues = client.replace(/webSocketPort/g, webSocketPort).replace(/reloadDelay/g, reloadDelayOnClient);
     t.false(result.includes(clientWithValues), 'get default html file from root (inject js)');
 });
+
+ava(async t => {
+  const result = await rp(`${server2Host}folder/`);
+  t.true(result.includes("index.html in root"), 'get index.html file from root');
+});
