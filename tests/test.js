@@ -5,12 +5,11 @@ const ava = require('ava');
 const liteDevServer = require("../lib/server");
 const webSocketPort = 8080;
 const reloadDelayOnClient = 1000;
-const localhost3000 = "http://localhost:3000/";
-const localhost3001 = "http://localhost:3001/";
-liteDevServer({
+
+const server1 = liteDevServer({
     folder: __dirname + "/../tests/static",
     watchFolders: [__dirname + "/../tests/static"],
-    listen: 3000,
+    listen: 0,
     webSocketPort,
     page404: null,
     liveReload: true,
@@ -28,10 +27,10 @@ liteDevServer({
     ]
 });
 
-liteDevServer({
+const server2 = liteDevServer({
     folder: __dirname + "/../tests/static",
     watchFolders: [__dirname + "/../tests/static"],
-    listen: 3001,
+    listen: 0,
     page404: null,
     liveReload: false,
     reloadDelay: 200,
@@ -48,13 +47,13 @@ liteDevServer({
     ]
 });
 
-// (async () => {
-//     const result = await rp("http://localhost:3000");
-//     console.log(result);
-// })();
-//
-// console.log(client);
-[localhost3000, localhost3001].forEach((host)=>{
+const server1Host = `http://localhost:${server1.address().port}/`;
+const server2Host = `http://localhost:${server2.address().port}/`;
+
+console.log(server1Host);
+console.log(server2Host);
+
+[server1Host, server2Host].forEach((host)=>{
     ava(async t => {
         const result = await rp(host);
         t.true(result.includes("index.html in root"), 'get default html file from root');
@@ -76,18 +75,18 @@ liteDevServer({
     });
 });
 
-// on 3000 port
+// server1Host
 
 ava(async t => {
-    const result = await rp(localhost3000);
+    const result = await rp(server1Host);
     const clientWithValues = client.replace(/webSocketPort/g, webSocketPort).replace(/reloadDelay/g, reloadDelayOnClient);
     t.true(result.includes(clientWithValues), 'get default html file from root (inject js)');
 });
 
-// on 3001 port
+// server2Host
 
 ava(async t => {
-    const result = await rp(localhost3001);
+    const result = await rp(server2Host);
     const clientWithValues = client.replace(/webSocketPort/g, webSocketPort).replace(/reloadDelay/g, reloadDelayOnClient);
     t.false(result.includes(clientWithValues), 'get default html file from root (inject js)');
 });

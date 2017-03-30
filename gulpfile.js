@@ -31,4 +31,4 @@ gulp.task('client', cb => {
         cb);
 });
 
-gulp.task('prepublish', ['server', 'client']);
+gulp.task('build', ['server', 'client']);
