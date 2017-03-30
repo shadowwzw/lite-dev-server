@@ -11,7 +11,13 @@ gulp.task('server', cb => {
             eslint.format(),
             eslint.failAfterError(),
             babel({
-                presets: ['es2015']
+                presets: ['es2015'],
+                plugins: [
+                    require('babel-plugin-transform-object-rest-spread'),
+                    require('babel-plugin-transform-class-properties'),
+                    require('babel-plugin-transform-async-to-generator'),
+                    require('babel-plugin-transform-runtime'),
+                ]
             }),
             gulp.dest('lib')],
         cb);
@@ -24,7 +30,12 @@ gulp.task('client', cb => {
             eslint.format(),
             eslint.failAfterError(),
             babel({
-                presets: ['es2015']
+                presets: ['es2015'],
+                plugins: [
+                    require('babel-plugin-transform-object-rest-spread'),
+                    require('babel-plugin-transform-class-properties'),
+                    require('babel-plugin-transform-async-to-generator'),
+                ]
             }),
             uglify(),
             gulp.dest('lib')],

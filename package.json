@@ -1,6 +1,6 @@
 {
   "name": "lite-dev-server",
-  "version": "1.6.35",
+  "version": "1.7.35",
   "description": "This is http file server for develpment. This server supports livereload function and proxy function for your api server.",
   "main": "index.js",
   "scripts": {
@@ -36,7 +36,13 @@
   ],
   "devDependencies": {
     "ava": "^0.18.2",
+    "babel-eslint": "^7.2.1",
+    "babel-plugin-transform-async-to-generator": "^6.22.0",
+    "babel-plugin-transform-class-properties": "^6.23.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-es2015": "^6.24.0",
+    "babel-preset-es2017": "^6.22.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
     "gulp-eslint": "^3.0.1",

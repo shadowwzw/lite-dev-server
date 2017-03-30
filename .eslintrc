@@ -1,6 +1,10 @@
 {
   "parserOptions": {
-    "ecmaVersion": 6
+    "ecmaVersion": 6,
+    "sourceType": "module"
+  },
+  "ecmaFeatures": {
+    "modules": true
   },
   "extends": "eslint:recommended",
   "env": {
@@ -11,8 +15,10 @@
   },
   "rules": {
     "prefer-const": 2,
-    "no-console": 0
+    "no-console": 0,
+    "strict": [2, "never"],
   },
+  "parser": "babel-eslint",
   "globals": {
     "webSocketPort": true,
     "reloadDelay": true

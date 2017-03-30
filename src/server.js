@@ -1,6 +1,6 @@
 const path = require("path");
 const http = require("http");
-// const fsp = require("fs-promise");
+const fsp = require("fs-promise");
 const fs = require("fs");
 const Transform = require("stream").Transform;
 const mime = require('mime-types');
@@ -42,7 +42,7 @@ const liteDevServer = ({
     const EventEmitter = require("events");
     const liveReloadEM = new EventEmitter();
     const ws = require("ws");
-    wss = new ws.Server({ port: webSocketPort });
+    wss = new ws.Server({port: webSocketPort});
     wss.on("connection", connection => {
       console.log("\nlite-dev-server: The WebSocket connection is established successfully");
       const reloadHandler = () => {
@@ -64,7 +64,7 @@ const liteDevServer = ({
     });
     console.log(chalk.green(`\nwatchFolders ${watchFolders}`));
     watchFolders.forEach(folder => {
-      fs.watch(`${folder}`, { recursive: true }, () => {
+      fs.watch(`${folder}`, {recursive: true}, () => {
         setTimeout(function () {
           liveReloadEM.emit("reload");
         }, liveReloadDelay);
@@ -78,7 +78,7 @@ const liteDevServer = ({
       console.log(chalk.red(err + ""));
     }
 
-  const server = http.createServer((req, res) => {
+  const server = http.createServer(async (req, res) => {
     const ext = path.extname(req.url);
     console.log(chalk.blue(`<-- ${req.url}`));
     const matchedProxy = proxy.find(item => {
@@ -106,49 +106,44 @@ const liteDevServer = ({
       const injectStream = new Transform();
       injectStream._transform = _transform;
       if (req.url === "/" || (historyApiFallback && !ext)) {
-        fs.access(`${folder}/${INDEX_HTML}`, fs.constants.R_OK, err => {
-          if (err) fs.access(`${folder}/${INDEX_HTM}`, fs.constants.R_OK, err => {
-            if (err) {
-              console.log(chalk.red(err + ""));
-              res.statusCode = CODE404;
-              if (page404) fs.createReadStream(`${folder}/${page404}`).pipe(injectStream).pipe(res);
-              else res.end(MSG404);
-            }
-            else {
-              res.setHeader('Content-Type', 'text/html');
-              fs.createReadStream(`${folder}/${INDEX_HTM}`).pipe(injectStream).pipe(res);
-            }
-          });
-          else {
+        try {
+          await fsp.access(`${folder}/${INDEX_HTML}`, fs.constants.R_OK);
+          res.setHeader('Content-Type', 'text/html');
+          fs.createReadStream(`${folder}/${INDEX_HTML}`).pipe(injectStream).pipe(res);
+        } catch (err) {
+          try {
+            await fsp.access(`${folder}/${INDEX_HTM}`, fs.constants.R_OK);
             res.setHeader('Content-Type', 'text/html');
-            fs.createReadStream(`${folder}/${INDEX_HTML}`).pipe(injectStream).pipe(res);
-          }
-        });
-      } else {
-        fs.access(`${folder}${req.url}`, fs.constants.R_OK, err => {
-          if (err) {
+            fs.createReadStream(`${folder}/${INDEX_HTM}`).pipe(injectStream).pipe(res);
+          } catch (err) {
             console.log(chalk.red(err + ""));
             res.statusCode = CODE404;
             if (page404) fs.createReadStream(`${folder}/${page404}`).pipe(injectStream).pipe(res);
             else res.end(MSG404);
           }
-          else {
-            // const ext = path.extname(req.url);
-            if (ext === ".html" || ext === ".htm") {
-              res.setHeader('Content-Type', 'text/html');
-              fs.createReadStream(`${folder}${req.url}`).pipe(injectStream).pipe(res);
-            } else {
-              res.setHeader('Content-Type', mime.contentType(ext));
-              fs.createReadStream(`${folder}${req.url}`).pipe(res);
-            }
+        }
+      } else {
+        try {
+          await fsp.access(`${folder}${req.url}`, fs.constants.R_OK);
+          if (ext === ".html" || ext === ".htm") {
+            res.setHeader('Content-Type', 'text/html');
+            fs.createReadStream(`${folder}${req.url}`).pipe(injectStream).pipe(res);
+          } else {
+            res.setHeader('Content-Type', mime.contentType(ext));
+            fs.createReadStream(`${folder}${req.url}`).pipe(res);
           }
-        });
+        } catch (err) {
+          console.log(chalk.red(err + ""));
+          res.statusCode = CODE404;
+          if (page404) fs.createReadStream(`${folder}/${page404}`).pipe(injectStream).pipe(res);
+          else res.end(MSG404);
+        }
       }
     }
   });
   server.listen(listen);
   console.log(chalk.green(`lite-dev-server listening on port ${server.address().port}`));
-  server.wss =wss;
+  server.wss = wss;
   return server;
 };
 
