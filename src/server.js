@@ -108,11 +108,15 @@ const liteDevServer = ({
       if (req.url === "/" || (historyApiFallback && !ext)) {
         try {
           await fsp.access(`${folder}/${INDEX_HTML}`, fs.constants.R_OK);
+          const stats = await fsp.stat(`${folder}/${INDEX_HTML}`);
+          if(!stats.isFile()) throw new Error('this is folder');
           res.setHeader('Content-Type', 'text/html');
           fs.createReadStream(`${folder}/${INDEX_HTML}`).pipe(injectStream).pipe(res);
         } catch (err) {
           try {
             await fsp.access(`${folder}/${INDEX_HTM}`, fs.constants.R_OK);
+            const stats = await fsp.stat(`${folder}/${INDEX_HTM}`);
+            if(!stats.isFile()) throw new Error('this is folder');
             res.setHeader('Content-Type', 'text/html');
             fs.createReadStream(`${folder}/${INDEX_HTM}`).pipe(injectStream).pipe(res);
           } catch (err) {
