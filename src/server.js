@@ -28,6 +28,7 @@ const liteDevServer = ({
                          giveDefaultPage = true,
                          defaultPageFirst = "index.html",
                          defaultPageSecond = "index.htm",
+                         serverName = "liteDevServer",
                        }) => {
   const clientScript = fs.readFileSync(`${__dirname}/client.js`, 'utf8').replace(/webSocketPort/g, webSocketPort).replace(/reloadDelay/g, reloadDelayOnClient);
   const _transform = function (chunk, enc, cb) {
@@ -80,7 +81,7 @@ const liteDevServer = ({
 
   const server = http.createServer(async (req, res) => {
     const ext = path.extname(req.url);
-    console.log(chalk.blue(`<-- ${req.url}`));
+    console.log(chalk.blue(`<-- ${req.url} ${serverName}`));
     const matchedProxy = proxy.find(item => {
       return req.url.match(item.path) && item.host && item.port;
     });

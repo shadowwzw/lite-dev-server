@@ -8,6 +8,7 @@ const reloadDelayOnClient = 1000;
 const MSG404 = "not found";
 
 const server1 = liteDevServer({
+  serverName: "server1",
   folder: __dirname + "/../tests/static",
   watchFolders: [__dirname + "/../tests/static"],
   listen: 0,
@@ -31,6 +32,7 @@ const server1 = liteDevServer({
 });
 
 const server2 = liteDevServer({
+  serverName: "server2",
   folder: __dirname + "/../tests/static",
   watchFolders: [__dirname + "/../tests/static"],
   listen: 0,
