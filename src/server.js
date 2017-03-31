@@ -1,14 +1,13 @@
 const path = require("path");
 const http = require("http");
-const fsp = require("fs-promise");
 const fs = require("fs");
 const Transform = require("stream").Transform;
-const mime = require('mime-types');
 const chalk = require('chalk');
 const MSG404 = "not found";
 const CODE404 = 404;
-const INDEX_HTML = "index.html";
-const INDEX_HTM = "index.htm";
+const DEFAULT_PAGE_FIRST = "index.html";
+const DEFAULT_PAGE_SECOND = "index.htm";
+import { giveHtmlFile, giveFile } from './helpers';
 
 if (!fs.constants) {
   fs.constants = {
@@ -107,41 +106,28 @@ const liteDevServer = ({
       injectStream._transform = _transform;
       if (req.url === "/" || (historyApiFallback && !ext)) {
         try {
-          await fsp.access(`${folder}/${INDEX_HTML}`, fs.constants.R_OK);
-          const stats = await fsp.stat(`${folder}/${INDEX_HTML}`);
-          if(!stats.isFile()) throw new Error('this is folder');
-          res.setHeader('Content-Type', 'text/html');
-          fs.createReadStream(`${folder}/${INDEX_HTML}`).pipe(injectStream).pipe(res);
+          await giveHtmlFile(res, `${folder}/${DEFAULT_PAGE_FIRST}`, injectStream);
         } catch (err) {
           try {
-            await fsp.access(`${folder}/${INDEX_HTM}`, fs.constants.R_OK);
-            const stats = await fsp.stat(`${folder}/${INDEX_HTM}`);
-            if(!stats.isFile()) throw new Error('this is folder');
-            res.setHeader('Content-Type', 'text/html');
-            fs.createReadStream(`${folder}/${INDEX_HTM}`).pipe(injectStream).pipe(res);
+            await giveHtmlFile(res, `${folder}/${DEFAULT_PAGE_SECOND}`, injectStream);
           } catch (err) {
             console.log(chalk.red(err + ""));
             res.statusCode = CODE404;
-            if (page404) fs.createReadStream(`${folder}/${page404}`).pipe(injectStream).pipe(res);
+            if (page404) await giveHtmlFile(res, `${folder}/${page404}`, injectStream);
             else res.end(MSG404);
           }
         }
       } else {
         try {
-          await fsp.access(`${folder}${req.url}`, fs.constants.R_OK);
-          const stats = await fsp.stat(`${folder}${req.url}`);
-          if(!stats.isFile()) throw new Error('this is folder');
           if (ext === ".html" || ext === ".htm") {
-            res.setHeader('Content-Type', 'text/html');
-            fs.createReadStream(`${folder}${req.url}`).pipe(injectStream).pipe(res);
+            await giveHtmlFile(res, `${folder}${req.url}`, injectStream);
           } else {
-            res.setHeader('Content-Type', mime.contentType(ext));
-            fs.createReadStream(`${folder}${req.url}`).pipe(res);
+            await giveFile(res, `${folder}${req.url}`, ext);
           }
         } catch (err) {
           console.log(chalk.red(err + ""));
           res.statusCode = CODE404;
-          if (page404) fs.createReadStream(`${folder}/${page404}`).pipe(injectStream).pipe(res);
+          if (page404) await giveHtmlFile(res, `${folder}/${page404}`, injectStream);
           else res.end(MSG404);
         }
       }
