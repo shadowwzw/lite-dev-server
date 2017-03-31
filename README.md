@@ -85,6 +85,7 @@ liteDevServer({
     giveDefaultPage: true,
     defaultPageFirst: "index.html",
     defaultPageSecond: "index.htm",
+    serverName: "liteDevServer",
     proxy: [
         { path: /\/api/, host: "localhost", port: "8888" },
         { path: /\/api2/, host: "localhost", port: "8888" },
@@ -126,6 +127,8 @@ liteDevServer({
   * defaultPageFirst (String) (default value: "index.html")
 
   * defaultPageSecond (String) (default value: "index.htm")
+  
+  * serverName (String) (default value: "liteDevServer")
 
 ## **License**
 
