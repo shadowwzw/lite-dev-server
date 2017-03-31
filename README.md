@@ -82,6 +82,9 @@ liteDevServer({
     autoInjectClientJS: true,
     historyApiFallback: false,
     reloadDelayOnClient: 1000,
+    giveDefaultPage: true,
+    defaultPageFirst: "index.html",
+    defaultPageSecond: "index.htm",
     proxy: [
         { path: /\/api/, host: "localhost", port: "8888" },
         { path: /\/api2/, host: "localhost", port: "8888" },
@@ -117,6 +120,12 @@ liteDevServer({
   * autoInjectClientJS (Boolean) (default value: true): Auto inject javascript in html documents (for liveReload).
   
   * historyApiFallback (Boolean) (default value: false): If you are using the HTML5 history API you probably need to serve your index.html in place of 404 responses, which can be done by setting historyApiFallback: true.
+
+  * giveDefaultPage (Boolean) (default value: true)
+
+  * defaultPageFirst (String) (default value: "index.html")
+
+  * defaultPageSecond (String) (default value: "index.htm")
 
 ## **License**
 
