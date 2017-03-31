@@ -97,6 +97,11 @@ ava(async t => {
   }
 });
 
+ava(async t => {
+  const result = await rp(`${server1Host}folder2/`);
+  t.true(result.includes("index.html in folder2"), 'get default page from folder2');
+});
+
 // server2Host
 
 ava(async t => {

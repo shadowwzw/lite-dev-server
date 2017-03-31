@@ -5,9 +5,7 @@ const Transform = require("stream").Transform;
 const chalk = require('chalk');
 const MSG404 = "not found";
 const CODE404 = 404;
-const DEFAULT_PAGE_FIRST = "index.html";
-const DEFAULT_PAGE_SECOND = "index.htm";
-import { giveHtmlFile, giveFile } from './helpers';
+import { giveHtmlFile, giveFile, isDirectory, isFile } from './helpers';
 
 if (!fs.constants) {
   fs.constants = {
@@ -27,6 +25,9 @@ const liteDevServer = ({
                          liveReloadDelay = 0,
                          historyApiFallback = false,
                          reloadDelayOnClient = 100,
+                         giveDefaultPage = true,
+                         defaultPageFirst = "index.html",
+                         defaultPageSecond = "index.htm",
                        }) => {
   const clientScript = fs.readFileSync(`${__dirname}/client.js`, 'utf8').replace(/webSocketPort/g, webSocketPort).replace(/reloadDelay/g, reloadDelayOnClient);
   const _transform = function (chunk, enc, cb) {
@@ -41,7 +42,7 @@ const liteDevServer = ({
     const EventEmitter = require("events");
     const liveReloadEM = new EventEmitter();
     const ws = require("ws");
-    wss = new ws.Server({port: webSocketPort});
+    wss = new ws.Server({ port: webSocketPort });
     wss.on("connection", connection => {
       console.log("\nlite-dev-server: The WebSocket connection is established successfully");
       const reloadHandler = () => {
@@ -63,7 +64,7 @@ const liteDevServer = ({
     });
     console.log(chalk.green(`\nwatchFolders ${watchFolders}`));
     watchFolders.forEach(folder => {
-      fs.watch(`${folder}`, {recursive: true}, () => {
+      fs.watch(`${folder}`, { recursive: true }, () => {
         setTimeout(function () {
           liveReloadEM.emit("reload");
         }, liveReloadDelay);
@@ -106,10 +107,10 @@ const liteDevServer = ({
       injectStream._transform = _transform;
       if (req.url === "/" || (historyApiFallback && !ext)) {
         try {
-          await giveHtmlFile(res, `${folder}/${DEFAULT_PAGE_FIRST}`, injectStream);
+          await giveHtmlFile(res, `${folder}/${defaultPageFirst}`, injectStream);
         } catch (err) {
           try {
-            await giveHtmlFile(res, `${folder}/${DEFAULT_PAGE_SECOND}`, injectStream);
+            await giveHtmlFile(res, `${folder}/${defaultPageSecond}`, injectStream);
           } catch (err) {
             console.log(chalk.red(err + ""));
             res.statusCode = CODE404;
@@ -119,10 +120,35 @@ const liteDevServer = ({
         }
       } else {
         try {
-          if (ext === ".html" || ext === ".htm") {
-            await giveHtmlFile(res, `${folder}${req.url}`, injectStream);
-          } else {
-            await giveFile(res, `${folder}${req.url}`, ext);
+          try {
+            await isFile(`${folder}${req.url}`);
+            if (ext === ".html" || ext === ".htm") {
+              await giveHtmlFile(res, `${folder}${req.url}`, injectStream);
+            } else {
+              await giveFile(res, `${folder}${req.url}`, ext);
+            }
+          } catch (err) {
+            try{
+              if(giveDefaultPage){
+                await isDirectory(`${folder}${req.url}`);
+                try {
+                  await giveHtmlFile(res, `${folder}${req.url}${defaultPageFirst}`, injectStream);
+                } catch (err) {
+                  try {
+                    await giveHtmlFile(res, `${folder}${req.url}${defaultPageSecond}`, injectStream);
+                  } catch (err) {
+                    console.log(chalk.red(err + ""));
+                    res.statusCode = CODE404;
+                    if (page404) await giveHtmlFile(res, `${folder}/${page404}`, injectStream);
+                    else res.end(MSG404);
+                  }
+                }
+              } else {
+                throw new Error("giveDefaultPage is false");
+              }
+            } catch (err) {
+              console.log(chalk.red(err + ""));
+            }
           }
         } catch (err) {
           console.log(chalk.red(err + ""));
