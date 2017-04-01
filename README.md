@@ -36,6 +36,17 @@ liteDevServer( { folder: "public", watchFolders: ["public"], listen: 3333,} );
 ```
 ----------
 
+## **Usage (random port)**
+<p>If you want to OS set random port you can set listen option on 0.</p>
+<a href="https://nodejs.org/dist/latest-v6.x/docs/api/http.html#http_server_listen_port_hostname_backlog_callback">More you can find here</a>
+
+```js
+const liteDevServer = require("lite-dev-server");
+const server = liteDevServer( { folder: "public", watchFolders: ["public"], listen: 0,} ); 
+console.log(server.address().port) // your port
+```
+----------
+
 ## **Usage with proxy function for Express api server**
 
 ```js
