@@ -86,6 +86,10 @@ liteDevServer({
     defaultPageFirst: "index.html",
     defaultPageSecond: "index.htm",
     serverName: "liteDevServer",
+    pathRewrite: {
+      pattern: /\/.+\/(\.*)/g,
+      replacement: "/$1",
+    },
     proxy: [
         { path: /\/api/, host: "localhost", port: "8888" },
         { path: /\/api2/, host: "localhost", port: "8888" },
@@ -129,6 +133,8 @@ liteDevServer({
   * defaultPageSecond (String) (default value: "index.htm")
   
   * serverName (String) (default value: "liteDevServer")
+  
+  * pathRewrite (Object | Array of Objects | Null) (default value: null)
 
 ## **License**
 

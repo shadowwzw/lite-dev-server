@@ -29,6 +29,7 @@ const liteDevServer = ({
                          defaultPageFirst = "index.html",
                          defaultPageSecond = "index.htm",
                          serverName = "liteDevServer",
+                         pathRewrite = null,
                        }) => {
   const clientScript = fs.readFileSync(`${__dirname}/client.js`, 'utf8').replace(/webSocketPort/g, webSocketPort).replace(/reloadDelay/g, reloadDelayOnClient);
   const _transform = function (chunk, enc, cb) {
@@ -80,13 +81,13 @@ const liteDevServer = ({
     }
 
   const server = http.createServer(async (req, res) => {
-    const ext = path.extname(req.url);
+    let url = req.url;
+    const ext = path.extname(url);
     console.log(chalk.blue(`<-- ${req.url} ${serverName}`));
     const matchedProxy = proxy.find(item => {
       return req.url.match(item.path) && item.host && item.port;
     });
     if (matchedProxy) {
-      let url = req.url;
       const pathRewrite = matchedProxy.pathRewrite;
       if (pathRewrite && (typeof pathRewrite === 'object')) {
         url = url.replace(pathRewrite.pattern, pathRewrite.replacement);
@@ -104,6 +105,13 @@ const liteDevServer = ({
       });
       request.end();
     } else {
+      if (pathRewrite) {
+        [].concat(pathRewrite).forEach(i => {
+          if (i && i.pattern && i.replacement) {
+            url = url.replace(i.pattern, i.replacement);
+          }
+        })
+      }
       const injectStream = new Transform();
       injectStream._transform = _transform;
       if (req.url === "/" || (historyApiFallback && !ext)) {
@@ -129,8 +137,8 @@ const liteDevServer = ({
               await giveFile(res, `${folder}${req.url}`, ext);
             }
           } catch (err) {
-            try{
-              if(giveDefaultPage){
+            try {
+              if (giveDefaultPage) {
                 await isDirectory(`${folder}${req.url}`);
                 try {
                   await giveHtmlFile(res, `${folder}${req.url}${defaultPageFirst}`, injectStream);
