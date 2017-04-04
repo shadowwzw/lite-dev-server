@@ -13,7 +13,11 @@ Perhaps you may be interested: [webpack-with-lite-dev-server-babel-koa-react](ht
 ## **Installation**
 
 ```bash
-$ npm install lite-dev-server
+$ npm install lite-dev-server --save-dev
+```
+or
+```bash
+$ yarn add lite-dev-server -D
 ```
 ----------
 ## **Usage (default port: 3000)**
