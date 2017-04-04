@@ -16,7 +16,7 @@
   "rules": {
     "prefer-const": 2,
     "no-console": 0,
-    "strict": [2, "never"],
+    "strict": [2, "never"]
   },
   "parser": "babel-eslint",
   "globals": {
