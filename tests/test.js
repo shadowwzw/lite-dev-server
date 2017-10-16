@@ -34,7 +34,6 @@ const server1 = liteDevServer({
 const server2 = liteDevServer({
   serverName: "server2",
   folder: __dirname + "/../tests/static",
-  watchFolders: [__dirname + "/../tests/static"],
   listen: 0,
   page404: null,
   liveReload: false,

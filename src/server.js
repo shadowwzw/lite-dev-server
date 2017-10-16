@@ -40,6 +40,7 @@ const liteDevServer = ({
     cb();
   };
   let wss = null;
+  const watchers = [];
   if (liveReload) {
     const EventEmitter = require("events");
     const liveReloadEM = new EventEmitter();
@@ -66,11 +67,11 @@ const liteDevServer = ({
     });
     console.log(chalk.green(`\nwatchFolders ${watchFolders}`));
     watchFolders.forEach(folder => {
-      fs.watch(`${folder}`, { recursive: true }, () => {
+      watchers.push(fs.watch(`${folder}`, { recursive: true }, () => {
         setTimeout(function () {
           liveReloadEM.emit("reload");
         }, liveReloadDelay);
-      });
+      }));
     });
   }
   if (page404)
@@ -89,7 +90,7 @@ const liteDevServer = ({
     });
     if (matchedProxy) {
       const pathRewrite = matchedProxy.pathRewrite;
-      if (pathRewrite && (typeof pathRewrite === 'object')) {
+      if (pathRewrite && (typeof pathRewrite === "object")) {
         url = url.replace(pathRewrite.pattern, pathRewrite.replacement);
       }
       const options = {
@@ -171,6 +172,12 @@ const liteDevServer = ({
   server.listen(listen);
   console.log(chalk.green(`lite-dev-server listening on port ${server.address().port}`));
   server.wss = wss;
+  server.watchers = watchers;
+  server.closeAllWatchers = () => {
+    if(watchers && watchers.length){
+      watchers.forEach( watcher => watcher && watcher.close && watcher.close());
+    }
+  };
   return server;
 };
 

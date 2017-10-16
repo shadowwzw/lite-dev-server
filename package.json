@@ -1,13 +1,12 @@
 {
   "name": "lite-dev-server",
-  "version": "2.2.5",
+  "version": "3.2.5",
   "description": "This is http file server for develpment. This server supports livereload function and proxy function for your api server.",
   "main": "index.js",
   "scripts": {
     "build": "gulp build",
-    "test": "ava tests",
-    "all": "npm run build && npm test",
-    "prepublish": "npm run all"
+    "test": "npm run build && ava tests",
+    "prepublish": "npm test"
   },
   "repository": {
     "type": "git",
