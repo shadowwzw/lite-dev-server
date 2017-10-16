@@ -53,13 +53,9 @@ const server2 = liteDevServer({
   ]
 });
 
-const server1Host = `http://localhost:${server1.address().port}/`;
-const server2Host = `http://localhost:${server2.address().port}/`;
-
-console.log(server1Host);
-console.log(server2Host);
-
-[server1Host, server2Host].forEach((host) => {
+[server1, server2].forEach((server, index) => {
+  const host = `http://localhost:${server.address().port}/`;
+  console.log(host);
   ava(async t => {
     const result = await rp(host);
     t.true(result.includes("index.html in root"), 'get default html file from root');
@@ -79,39 +75,56 @@ console.log(server2Host);
     const result = await rp(`${host}folder/some.html`);
     t.true(result.includes("some.html in folder"), 'get some.html file from folder');
   });
-});
 
-// server1Host
+  if (index === 0) {
+    // server1Host
+    ava(async t => {
+      const result = await rp(host);
+      const clientWithValues = client.replace(/webSocketPort/g, webSocketPort).replace(/reloadDelay/g, reloadDelayOnClient);
+      t.true(result.includes(clientWithValues), 'get default html file from root (inject js)');
+    });
 
-ava(async t => {
-  const result = await rp(server1Host);
-  const clientWithValues = client.replace(/webSocketPort/g, webSocketPort).replace(/reloadDelay/g, reloadDelayOnClient);
-  t.true(result.includes(clientWithValues), 'get default html file from root (inject js)');
-});
+    ava(async t => {
+      try{
+        await rp(`${host}folder/`);
+        t.fail('get default html file from folder');
+      } catch(err){
+        t.true(err.statusCode === 404 && err.error === MSG404, 'get default html file from folder');
+      }
+    });
 
-ava(async t => {
-  try{
-    await rp(`${server1Host}folder/`);
-    t.fail('get default html file from folder');
-  } catch(err){
-    t.true(err.statusCode === 404 && err.error === MSG404, 'get default html file from folder');
+    ava(async t => {
+      const result = await rp(`${host}folder2/`);
+      t.true(result.includes("index.html in folder2"), 'get default page from folder2');
+    });
+
+    ava(async t => {
+      t.true(typeof server.close === 'function', 'method for close http server');
+    });
+
+    ava(async t => {
+      t.true(server.wss && typeof server.wss.close === 'function', 'method for close webSocket server');
+    });
+
+    ava(async t => {
+      t.true(typeof server.closeAllWatchers === 'function', 'method for close all watchers');
+    });
+
+    ava(async t => {
+      t.true(server.watchers && !!server.watchers.length, 'array of watchers');
+    });
+  } else {
+    // server2Host
+    ava(async t => {
+      const result = await rp(host);
+      const clientWithValues = client.replace(/webSocketPort/g, webSocketPort).replace(/reloadDelay/g, reloadDelayOnClient);
+      t.false(result.includes(clientWithValues), 'get default html file from root (inject js)');
+    });
+
+    ava(async t => {
+      const result = await rp(`${host}folder/`);
+      t.true(result.includes("index.html in root"), 'check historyApiFallback');
+    });
   }
-});
 
-ava(async t => {
-  const result = await rp(`${server1Host}folder2/`);
-  t.true(result.includes("index.html in folder2"), 'get default page from folder2');
-});
-
-// server2Host
-
-ava(async t => {
-  const result = await rp(server2Host);
-  const clientWithValues = client.replace(/webSocketPort/g, webSocketPort).replace(/reloadDelay/g, reloadDelayOnClient);
-  t.false(result.includes(clientWithValues), 'get default html file from root (inject js)');
-});
-
-ava(async t => {
-  const result = await rp(`${server2Host}folder/`);
-  t.true(result.includes("index.html in root"), 'check historyApiFallback');
 });

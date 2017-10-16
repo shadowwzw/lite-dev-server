@@ -1,6 +1,6 @@
 {
   "name": "lite-dev-server",
-  "version": "3.2.5",
+  "version": "3.2.6",
   "description": "This is http file server for develpment. This server supports livereload function and proxy function for your api server.",
   "main": "index.js",
   "scripts": {

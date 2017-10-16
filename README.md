@@ -51,6 +51,19 @@ console.log(server.address().port) // your port
 ```
 ----------
 
+## **Close server**
+
+```js
+const liteDevServer = require("lite-dev-server");
+const server = liteDevServer( { folder: "public", watchFolders: ["public"]} );
+
+server.close(); // Close http server
+server.wss.close(); // Close websocket server
+server.watchers[0].close(); // Close watcher
+server.closeAllWatchers(); // Close all watchers
+```
+----------
+
 ## **Usage with proxy function for Express api server**
 
 ```js
